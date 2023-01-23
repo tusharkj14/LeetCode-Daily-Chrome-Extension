@@ -1,0 +1,17 @@
+.options {
+  margin-left: 2%;
+  /* display: flex; */
+  flex-wrap: wrap;
+  /* border: 2px solid black; */
+
+  width: 80%;
+  justify-content: space-evenly;
+}
+li{
+  margin: 10px;
+  width: 5%;
+  display: inline-block;
+}
+.card{
+  border-radius: 5px;
+}
