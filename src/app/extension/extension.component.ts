@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import axios from "axios";
+import { HelperService } from "../helper.service";
+import { keyable } from "../keyable.interface";
 
 @Component({
   selector: 'app-extension',
@@ -8,46 +10,19 @@ import axios from "axios";
   styleUrls: ['./extension.component.css']
 })
 export class ExtensionComponent implements OnInit {
-  private query = `query {
-    activeDailyCodingChallengeQuestion {
-        date
-        link
-        question {
-            questionId
-            questionFrontendId
-            title
-            difficulty
-            likes
-            dislikes
-            acRate
-        }
-    }
-}`;
-  private url = `https://leetcode.com/graphql/`
-  // private corsProxy = `https://cors-anywhere.herokuapp.com/`;
-  private corsProxy = `https://tushar-kj-cors-render-com.onrender.com/`;
-  public data!:any  ;
-  constructor(){}
+  public data: keyable = {};
+  constructor(private help: HelperService) { }
   ngOnInit(): void {
-    this.getData();
+    this.help.getData();
+    this.help.fetchData().subscribe((tempdata) => {
+      this.data = tempdata!['data']!['activeDailyCodingChallengeQuestion'];
+      this.data['link'] = "https://leetcode.com" + this.data['link'];
+      this.data['question']['acRate'] = Math.round(this.data['question']['acRate'] * 100) / 100;
+
+    });
+
   }
-  async getData(){
 
-
-    const init = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify({ query: this.query }),
-    }
-
-
-    this.data = await fetch(this.corsProxy + this.url, init).then(response => response.json());
-    this.data = this.data.data.activeDailyCodingChallengeQuestion;
-
-    this.data.link = "https://leetcode.com" + this.data.link;
-    this.data.question.acRate = Math.round(this.data.question.acRate*100)/100;
-    console.log(this.data);
-  }
 
 
 }
